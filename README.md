@@ -104,3 +104,37 @@ src/
 
 All database operations use handwritten parameterized SQL through `pg`; no ORM
 or query builder is used.
+
+## Design decisions and trade-offs
+
+The database uses two main tables: `candidates` and `jobs`. Skills and required
+skills are stored as PostgreSQL text arrays. This keeps the schema small and
+the seed data easy to understand for this assignment. A more normalized
+production design could use separate `skills` and join tables, which would make
+skill reuse and validation stronger but would also add queries and complexity
+that are not necessary for this take-home project.
+
+The matching algorithm gives skills the highest weight at 40% because matching
+the required technical capabilities is the most important signal. Experience
+fit contributes 25%, culture fit contributes 20%, and availability contributes
+15%. Skill overlap is calculated from the proportion of required skills the
+candidate has. Experience is compared with the job's minimum, and both
+additional factors provide useful ranking context. The final score is rounded
+to a value from 0 to 100 and results are sorted in descending order.
+
+The service calculates matches in application code after retrieving the
+relevant records with SQL. This makes the scoring rules easy to read, test, and
+change. For a much larger dataset, the matching calculation could be moved
+closer to the database or optimized with precomputed/search indexes, but the
+current approach is appropriate for the small assignment dataset and keeps the
+business logic separate from the data-access layer.
+
+## AI tools
+
+I used an AI assistant through Copilot SDK in VS Code while working on this
+assignment. I used it to clarify the assignment requirements, discuss the
+database and API structure, draft parts of the implementation, troubleshoot
+the Supabase connection, and review the README and verification steps. I
+reviewed the generated changes, ran the database initialization and API
+endpoints locally, and made sure the final design and scoring decisions were
+understood before submitting.
