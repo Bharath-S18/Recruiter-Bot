@@ -6,7 +6,8 @@ SELECT
   jp.opened_date,
   r.name AS recruiter_name
 FROM job_postings AS jp
-JOIN recruiters AS r ON r.id = jp.recruiter_id
+JOIN recruiters AS r
+  ON r.id = jp.recruiter_id
 WHERE jp.status = 'open'
 ORDER BY jp.id;
 
@@ -29,7 +30,8 @@ SELECT
   MIN(a.full_name) AS applicant_name,
   COUNT(DISTINCT i.job_posting_id) AS job_postings_applied_to
 FROM applicants AS a
-JOIN interviews AS i ON i.applicant_id = a.id
+JOIN interviews AS i
+  ON i.applicant_id = a.id
 GROUP BY LOWER(a.email)
 HAVING COUNT(DISTINCT i.job_posting_id) > 1
 ORDER BY normalized_email;
@@ -45,7 +47,8 @@ SELECT
     2
   ) AS final_conversion_rate_percent
 FROM recruiters AS r
-JOIN job_postings AS jp ON jp.recruiter_id = r.id
+JOIN job_postings AS jp
+  ON jp.recruiter_id = r.id
 JOIN interviews AS i
   ON i.job_posting_id = jp.id
   AND i.stage = 'Final'
@@ -61,7 +64,8 @@ WITH recruiter_placements AS (
     r.name AS recruiter_name,
     COUNT(*) AS successful_placements
   FROM recruiters AS r
-  JOIN job_postings AS jp ON jp.recruiter_id = r.id
+  JOIN job_postings AS jp
+    ON jp.recruiter_id = r.id
   JOIN interviews AS i
     ON i.job_posting_id = jp.id
     AND i.stage = 'Final'
